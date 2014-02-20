@@ -1,4 +1,6 @@
 ﻿Imports System.Runtime.InteropServices
+Imports System.Net
+Imports System.IO
 
 Public Class frmMain
 
@@ -19,9 +21,11 @@ Public Class frmMain
     Public Declare Function RegisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Integer
     Public Declare Function UnregisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer) As Integer
 
+    Const curVersion As String = "1.0-beta"
+
     Private curCodeListPath As String 'Store the file path
-    Private doKeys As Boolean = True 'Send keys or not (debug purposes)
-    Private startDate As Date
+    Private doKeystrokes As Boolean = True 'Send keys or not (debug purposes)
+    Private scanStartDate As Date
 
     Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
         If m.Msg = WM_HOTKEY Then
@@ -33,11 +37,12 @@ Public Class frmMain
                     If MessageBox.Show("Do you want to clear the codes?", "Clear Codes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then lstCodes.Items.Clear()
                 End If
 
-                tmrScanner.Interval = Val(txtInterval.Text)
+                'Increase value if you have a slow computer or you will miss some codes
+                tmrScanner.Interval = Val(txtInterval.Text) 'TODO: Validation
                 tmrScanner.Start()
-                startDate = DateTime.Now
-                lblTime.Text = GetTimeDuration()
-                tmrTimePassed.Start()
+                scanStartDate = DateTime.Now
+                lblTime.Text = GetScanDuration()
+                tmrScanDuration.Start()
                 txtInterval.Enabled = False
                 txtCodeList.Enabled = False
                 btnLoad.Enabled = False
@@ -55,7 +60,7 @@ Public Class frmMain
                 chkScanWithUsedCodes.Enabled = True
                 chkReverseScan.Enabled = True
 
-                tmrTimePassed.Stop()
+                tmrScanDuration.Stop()
                 Log("> Process ended (Time taken: " & lblTime.Text & ")")
             End If
         End If
@@ -65,12 +70,24 @@ Public Class frmMain
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Call RegisterHotKey(Me.Handle, 9, MOD_ALT, VK_SNAPSHOT)
         lblTime.Text = String.Empty
+
+        Dim newVersion As String = GetVersionStringFromWeb()
+        If newVersion <> curVersion And newVersion <> String.Empty Then
+            If MessageBox.Show("There is a new version! Would you like to download it?" & vbNewLine & "Version: " & newVersion, "New version", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = Windows.Forms.DialogResult.Yes Then
+                Process.Start("https://github.com/viruxe/SSKeypadCracker/")
+            End If
+        End If
     End Sub
 
     Private Sub frmMain_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
-        Call UnregisterHotKey(Me.Handle, 9)  'Remember to unregister the hotkey
+        Call UnregisterHotKey(Me.Handle, 9)
     End Sub
 
+    ''' <summary>
+    ''' Well, it's to generate a new pincode you silly.
+    ''' </summary>
+    ''' <returns>4 digit pincode</returns>
+    ''' <remarks></remarks>
     Private Function GenerateNewCode() As String
         Dim rand As New Random
         Dim code As String
@@ -133,7 +150,7 @@ Public Class frmMain
                 End If
 
                 Try
-                    If doKeys Then SendKeys.Send(lstCodes.Items.Item(curIndex) & "~")
+                    If doKeystrokes Then SendKeys.Send(lstCodes.Items.Item(curIndex) & "~")
                     lstCodes.SelectedIndex = curIndex
                 Catch ex As Exception
                     Log("ERROR: " & ex.Message)
@@ -152,7 +169,7 @@ Public Class frmMain
             lblCodeCount.Text = lstCodes.Items.Count & " Codes"
 
             'Send keys
-            If doKeys Then
+            If doKeystrokes Then
                 SendKeys.Send(code & "~")
             Else
                 Log(code & "~", debugLog:=True)
@@ -184,7 +201,7 @@ Public Class frmMain
             txtCodeList.SelectionStart = txtCodeList.Text.Length
 
             Try
-                Dim sr As New System.IO.StreamReader(OpenFileDialog1.FileName)
+                Dim sr As New StreamReader(OpenFileDialog1.FileName)
 
                 lstCodes.Items.Clear()
                 While Not sr.EndOfStream
@@ -194,7 +211,7 @@ Public Class frmMain
 
                 lblCodeCount.Text = lstCodes.Items.Count & " Codes"
                 lstCodes.SelectedIndex = lstCodes.Items.Count - 1
-                Log("Codes Loaded: " & System.IO.Path.GetFileNameWithoutExtension(OpenFileDialog1.FileName) & " (" & lstCodes.Items.Count & " codes)")
+                Log("Codes Loaded: " & Path.GetFileNameWithoutExtension(OpenFileDialog1.FileName) & " (" & lstCodes.Items.Count & " codes)")
                 txtCodeList_TextChanged(sender, e)
 
                 If MessageBox.Show("Do you want to scan using these codes?", "Scan using these codes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then chkScanWithUsedCodes.Checked = True
@@ -209,14 +226,14 @@ Public Class frmMain
 
         If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
             Try
-                Dim sw As New System.IO.StreamWriter(SaveFileDialog1.FileName)
+                Dim sw As New StreamWriter(SaveFileDialog1.FileName)
 
                 For Each code As String In lstCodes.Items
                     sw.WriteLine(code.ToString)
                 Next
                 sw.Close()
 
-                Log("Codes Saved: " & System.IO.Path.GetFileNameWithoutExtension(SaveFileDialog1.FileName) & " (" & lstCodes.Items.Count & " codes)")
+                Log("Codes Saved: " & Path.GetFileNameWithoutExtension(SaveFileDialog1.FileName) & " (" & lstCodes.Items.Count & " codes)")
                 txtCodeList.Text = String.Empty
                 lstCodes.Items.Clear()
             Catch ex As Exception
@@ -242,19 +259,39 @@ Public Class frmMain
     Private Sub frmMain_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles Me.MouseDoubleClick
         MsgBox("viruxe.the.pwner@gmail.com")
 
-        If doKeys = True Then doKeys = False Else doKeys = True
+        If doKeystrokes = True Then doKeystrokes = False Else doKeystrokes = True
     End Sub
 
-    Private Sub TIME(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrTimePassed.Tick
-        lblTime.Text = GetTimeDuration()
+    Private Sub TIME(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrScanDuration.Tick
+        lblTime.Text = GetScanDuration()
     End Sub
 
-    Private Function GetTimeDuration() As String
-        Dim duration As TimeSpan = Date.Now - startDate
+    Private Function GetScanDuration() As String
+        Dim duration As TimeSpan = Date.Now - scanStartDate
 
         Return String.Format("{0:00}:{1:00}:{2:00}", _
         CInt(duration.TotalHours), _
         CInt(duration.TotalMinutes) Mod 60, _
         CInt(duration.TotalSeconds) Mod 60)
+    End Function
+
+    Private Function GetVersionStringFromWeb() As String
+        Dim version As String = String.Empty
+
+        Try
+            Dim fileRequest As HttpWebRequest = HttpWebRequest.Create("https://github.com/viruxe/SSKeypadCracker/blob/master/version.check")
+            Dim fileResponse As HttpWebResponse = fileRequest.GetResponse()
+            Using sr As StreamReader = New StreamReader(fileResponse.GetResponseStream())
+                version = sr.ReadToEnd
+                sr.Close()
+            End Using
+            fileResponse.Close()
+        Catch ex As Exception
+            Log("> Update check unavailable")
+            Debug.WriteLine("FAIL: " + ex.Message)
+            Return String.Empty
+        End Try
+
+        Return version
     End Function
 End Class

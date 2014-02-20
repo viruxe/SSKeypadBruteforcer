@@ -34,7 +34,7 @@ Partial Class frmMain
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.btnClearLog = New System.Windows.Forms.Button()
-        Me.tmrTimePassed = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrScanDuration = New System.Windows.Forms.Timer(Me.components)
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -140,9 +140,9 @@ Partial Class frmMain
         Me.btnClearLog.Text = "Clear Log"
         Me.btnClearLog.UseVisualStyleBackColor = True
         '
-        'tmrTimePassed
+        'tmrScanDuration
         '
-        Me.tmrTimePassed.Interval = 1000
+        Me.tmrScanDuration.Interval = 1000
         '
         'btnLoad
         '
@@ -296,7 +296,7 @@ Partial Class frmMain
     Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
     Friend WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Friend WithEvents btnClearLog As System.Windows.Forms.Button
-    Friend WithEvents tmrTimePassed As System.Windows.Forms.Timer
+    Friend WithEvents tmrScanDuration As System.Windows.Forms.Timer
     Friend WithEvents ToolTip1 As System.Windows.Forms.ToolTip
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Label4 As System.Windows.Forms.Label
