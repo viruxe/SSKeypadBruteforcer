@@ -279,7 +279,7 @@ Public Class frmMain
         Dim version As String = String.Empty
 
         Try
-            Dim fileRequest As HttpWebRequest = HttpWebRequest.Create("https://github.com/viruxe/SSKeypadCracker/blob/master/version.check")
+            Dim fileRequest As HttpWebRequest = HttpWebRequest.Create("https://raw.github.com/viruxe/SSKeypadCracker/master/version.check")
             Dim fileResponse As HttpWebResponse = fileRequest.GetResponse()
             Using sr As StreamReader = New StreamReader(fileResponse.GetResponseStream())
                 version = sr.ReadToEnd
