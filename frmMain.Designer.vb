@@ -34,7 +34,6 @@ Partial Class frmMain
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.btnClearLog = New System.Windows.Forms.Button()
-        Me.tmrScanDuration = New System.Windows.Forms.Timer(Me.components)
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -47,6 +46,7 @@ Partial Class frmMain
         Me.txtCodeList = New System.Windows.Forms.TextBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.lblTime = New System.Windows.Forms.Label()
+        Me.tmrDelayTimer = New System.Windows.Forms.Timer(Me.components)
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
@@ -68,7 +68,8 @@ Partial Class frmMain
         Me.txtInterval.TabIndex = 2
         Me.txtInterval.Text = "100"
         Me.txtInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.ToolTip1.SetToolTip(Me.txtInterval, "Interval in miliseconds to generate and send a new code.")
+        Me.ToolTip1.SetToolTip(Me.txtInterval, "Interval in miliseconds to generate and send a new code." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Insert a bigger value i" & _
+                "f you have a slow computer/low fps.")
         '
         'tmrScanner
         '
@@ -139,10 +140,6 @@ Partial Class frmMain
         Me.btnClearLog.TabIndex = 11
         Me.btnClearLog.Text = "Clear Log"
         Me.btnClearLog.UseVisualStyleBackColor = True
-        '
-        'tmrScanDuration
-        '
-        Me.tmrScanDuration.Interval = 1000
         '
         'btnLoad
         '
@@ -253,6 +250,11 @@ Partial Class frmMain
         Me.lblTime.TabIndex = 24
         Me.lblTime.Text = "Time"
         '
+        'tmrDelayTimer
+        '
+        Me.tmrDelayTimer.Enabled = True
+        Me.tmrDelayTimer.Interval = 1
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -296,7 +298,6 @@ Partial Class frmMain
     Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
     Friend WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Friend WithEvents btnClearLog As System.Windows.Forms.Button
-    Friend WithEvents tmrScanDuration As System.Windows.Forms.Timer
     Friend WithEvents ToolTip1 As System.Windows.Forms.ToolTip
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Label4 As System.Windows.Forms.Label
@@ -309,5 +310,6 @@ Partial Class frmMain
     Friend WithEvents txtCodeList As System.Windows.Forms.TextBox
     Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
     Friend WithEvents lblTime As System.Windows.Forms.Label
+    Friend WithEvents tmrDelayTimer As System.Windows.Forms.Timer
 
 End Class

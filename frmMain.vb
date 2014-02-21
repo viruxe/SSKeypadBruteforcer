@@ -22,6 +22,7 @@ Public Class frmMain
     Public Declare Function UnregisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer) As Integer
 
     Const curVersion As String = "1.0-beta"
+    Const gCheckDelayAmount As Integer = 2000
 
     Private curCodeListPath As String 'Store the file path
     Private doKeystrokes As Boolean = True 'Send keys or not (debug purposes)
@@ -42,7 +43,6 @@ Public Class frmMain
                 tmrScanner.Start()
                 scanStartDate = DateTime.Now
                 lblTime.Text = GetScanDuration()
-                tmrScanDuration.Start()
                 txtInterval.Enabled = False
                 txtCodeList.Enabled = False
                 btnLoad.Enabled = False
@@ -60,7 +60,6 @@ Public Class frmMain
                 chkScanWithUsedCodes.Enabled = True
                 chkReverseScan.Enabled = True
 
-                tmrScanDuration.Stop()
                 Log("> Process ended (Time taken: " & lblTime.Text & ")")
             End If
         End If
@@ -69,14 +68,10 @@ Public Class frmMain
 
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Call RegisterHotKey(Me.Handle, 9, MOD_ALT, VK_SNAPSHOT)
-        lblTime.Text = String.Empty
 
-        Dim newVersion As String = GetVersionStringFromWeb()
-        If newVersion <> curVersion And newVersion <> String.Empty Then
-            If MessageBox.Show("There is a new version! Would you like to download it?" & vbNewLine & "Version: " & newVersion, "New version", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = Windows.Forms.DialogResult.Yes Then
-                Process.Start("https://github.com/viruxe/SSKeypadCracker/")
-            End If
-        End If
+        tmrDelayTimer.Interval = gCheckDelayAmount 'Set the amount of time to wait for the update check to start
+
+        lblTime.Text = String.Empty 'Reset so the user doesn't see the default text
     End Sub
 
     Private Sub frmMain_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
@@ -139,6 +134,16 @@ Public Class frmMain
     End Function
 
     Private Sub tmrScanner_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrScanner.Tick
+        Static tickCount As Integer 'Count 1 second
+
+        'Update scan duration label after 1 second has passed
+        If tickCount < 9 Then
+            tickCount += 1
+        Else
+            tickCount = 0
+            lblTime.Text = GetScanDuration()
+        End If
+
         If chkScanWithUsedCodes.Checked Then 'Loop trough listbox
             If lstCodes.Items.Count > 0 Then
                 Static curIndex As Integer
@@ -262,10 +267,6 @@ Public Class frmMain
         If doKeystrokes = True Then doKeystrokes = False Else doKeystrokes = True
     End Sub
 
-    Private Sub TIME(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrScanDuration.Tick
-        lblTime.Text = GetScanDuration()
-    End Sub
-
     Private Function GetScanDuration() As String
         Dim duration As TimeSpan = Date.Now - scanStartDate
 
@@ -286,12 +287,30 @@ Public Class frmMain
                 sr.Close()
             End Using
             fileResponse.Close()
-        Catch ex As Exception
-            Log("> Update check unavailable")
+        Catch ex As WebException
             Debug.WriteLine("FAIL: " + ex.Message)
             Return String.Empty
         End Try
 
         Return version
     End Function
+
+    ''' <summary>
+    ''' Delays the update checker so the program can load fast on startup
+    ''' </summary>
+    Private Sub tmrDelayTimer_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrDelayTimer.Tick
+        tmrDelayTimer.Stop()
+        'Check for a new version of the program trough GitHub
+        Dim newVersion As String = GetVersionStringFromWeb()
+        If Not newVersion = String.Empty Then 'Only do something if newVersion is not empty
+            If newVersion <> curVersion Then
+                If MessageBox.Show("There is a new version! Would you like to download it?" & vbNewLine & "Version: " & newVersion, "New version", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = Windows.Forms.DialogResult.Yes Then
+                    Process.Start("https://github.com/viruxe/SSKeypadCracker/")
+                End If
+            Else : Log("> Program is up to date. Crack at will.")
+            End If
+        Else : Log("> Update check unavailable")
+        End If
+
+    End Sub
 End Class
