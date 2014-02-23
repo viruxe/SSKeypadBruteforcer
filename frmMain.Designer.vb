@@ -23,31 +23,34 @@ Partial Class frmMain
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.lstCodes = New System.Windows.Forms.ListBox()
-        Me.txtInterval = New System.Windows.Forms.TextBox()
-        Me.tmrScanner = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrBruteforce = New System.Windows.Forms.Timer(Me.components)
         Me.Label1 = New System.Windows.Forms.Label()
         Me.lblCodeCount = New System.Windows.Forms.Label()
         Me.lstDebug = New System.Windows.Forms.ListBox()
-        Me.chkDebugSound = New System.Windows.Forms.CheckBox()
-        Me.chkScanWithUsedCodes = New System.Windows.Forms.CheckBox()
+        Me.chkBruteforceWithUsedCodes = New System.Windows.Forms.CheckBox()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.btnClearLog = New System.Windows.Forms.Button()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btnLoad = New System.Windows.Forms.Button()
+        Me.btnSave = New System.Windows.Forms.Button()
+        Me.chkAskStartOver = New System.Windows.Forms.CheckBox()
+        Me.txtInterval = New System.Windows.Forms.TextBox()
+        Me.btnRestart = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.chkReverseScan = New System.Windows.Forms.CheckBox()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.chkDebugActive = New System.Windows.Forms.CheckBox()
-        Me.btnSave = New System.Windows.Forms.Button()
+        Me.chkReverseBruteforce = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtCodeList = New System.Windows.Forms.TextBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.lblTime = New System.Windows.Forms.Label()
         Me.tmrDelayTimer = New System.Windows.Forms.Timer(Me.components)
-        Me.GroupBox1.SuspendLayout()
+        Me.lblPage = New System.Windows.Forms.Label()
+        Me.btnConfig = New System.Windows.Forms.Button()
+        Me.btnUp = New System.Windows.Forms.Button()
+        Me.btnDown = New System.Windows.Forms.Button()
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -59,34 +62,22 @@ Partial Class frmMain
         Me.lstCodes.Size = New System.Drawing.Size(81, 381)
         Me.lstCodes.TabIndex = 1
         '
-        'txtInterval
-        '
-        Me.txtInterval.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtInterval.Location = New System.Drawing.Point(79, 22)
-        Me.txtInterval.Name = "txtInterval"
-        Me.txtInterval.Size = New System.Drawing.Size(44, 20)
-        Me.txtInterval.TabIndex = 2
-        Me.txtInterval.Text = "100"
-        Me.txtInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        Me.ToolTip1.SetToolTip(Me.txtInterval, "Interval in miliseconds to generate and send a new code." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Insert a bigger value i" & _
-                "f you have a slow computer/low fps.")
-        '
-        'tmrScanner
+        'tmrBruteforce
         '
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(6, 24)
+        Me.Label1.Location = New System.Drawing.Point(6, 15)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(67, 13)
+        Me.Label1.Size = New System.Drawing.Size(73, 13)
         Me.Label1.TabIndex = 3
         Me.Label1.Text = "Interval (ms):"
         '
         'lblCodeCount
         '
         Me.lblCodeCount.AutoSize = True
-        Me.lblCodeCount.Location = New System.Drawing.Point(12, 497)
+        Me.lblCodeCount.Location = New System.Drawing.Point(9, 497)
         Me.lblCodeCount.Name = "lblCodeCount"
         Me.lblCodeCount.Size = New System.Drawing.Size(46, 13)
         Me.lblCodeCount.TabIndex = 4
@@ -100,26 +91,16 @@ Partial Class frmMain
         Me.lstDebug.Size = New System.Drawing.Size(224, 381)
         Me.lstDebug.TabIndex = 5
         '
-        'chkDebugSound
+        'chkBruteforceWithUsedCodes
         '
-        Me.chkDebugSound.AutoSize = True
-        Me.chkDebugSound.Location = New System.Drawing.Point(68, 14)
-        Me.chkDebugSound.Name = "chkDebugSound"
-        Me.chkDebugSound.Size = New System.Drawing.Size(57, 17)
-        Me.chkDebugSound.TabIndex = 6
-        Me.chkDebugSound.Text = "Sound"
-        Me.chkDebugSound.UseVisualStyleBackColor = True
-        '
-        'chkScanWithUsedCodes
-        '
-        Me.chkScanWithUsedCodes.AutoSize = True
-        Me.chkScanWithUsedCodes.Location = New System.Drawing.Point(185, 12)
-        Me.chkScanWithUsedCodes.Name = "chkScanWithUsedCodes"
-        Me.chkScanWithUsedCodes.Size = New System.Drawing.Size(120, 17)
-        Me.chkScanWithUsedCodes.TabIndex = 7
-        Me.chkScanWithUsedCodes.Text = "Scan with Code List"
-        Me.ToolTip1.SetToolTip(Me.chkScanWithUsedCodes, "Start cracking with the already used codes list in backwards.")
-        Me.chkScanWithUsedCodes.UseVisualStyleBackColor = True
+        Me.chkBruteforceWithUsedCodes.AutoSize = True
+        Me.chkBruteforceWithUsedCodes.Location = New System.Drawing.Point(165, 12)
+        Me.chkBruteforceWithUsedCodes.Name = "chkBruteforceWithUsedCodes"
+        Me.chkBruteforceWithUsedCodes.Size = New System.Drawing.Size(147, 17)
+        Me.chkBruteforceWithUsedCodes.TabIndex = 7
+        Me.chkBruteforceWithUsedCodes.Text = "Bruteforce with Code List"
+        Me.ToolTip1.SetToolTip(Me.chkBruteforceWithUsedCodes, "Start bruteforcing with the already used codes list in backwards.")
+        Me.chkBruteforceWithUsedCodes.UseVisualStyleBackColor = True
         '
         'OpenFileDialog1
         '
@@ -134,104 +115,129 @@ Partial Class frmMain
         '
         'btnClearLog
         '
-        Me.btnClearLog.Location = New System.Drawing.Point(236, 500)
+        Me.btnClearLog.Image = CType(resources.GetObject("btnClearLog.Image"), System.Drawing.Image)
+        Me.btnClearLog.Location = New System.Drawing.Point(233, 500)
         Me.btnClearLog.Name = "btnClearLog"
-        Me.btnClearLog.Size = New System.Drawing.Size(87, 30)
+        Me.btnClearLog.Size = New System.Drawing.Size(90, 30)
         Me.btnClearLog.TabIndex = 11
-        Me.btnClearLog.Text = "Clear Log"
+        Me.btnClearLog.Text = "Clear Debug"
+        Me.btnClearLog.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnClearLog.UseVisualStyleBackColor = True
         '
         'btnLoad
         '
-        Me.btnLoad.Location = New System.Drawing.Point(232, 4)
+        Me.btnLoad.Image = CType(resources.GetObject("btnLoad.Image"), System.Drawing.Image)
+        Me.btnLoad.Location = New System.Drawing.Point(212, 7)
         Me.btnLoad.Name = "btnLoad"
-        Me.btnLoad.Size = New System.Drawing.Size(46, 23)
+        Me.btnLoad.Size = New System.Drawing.Size(37, 26)
         Me.btnLoad.TabIndex = 21
-        Me.btnLoad.Text = "Load"
-        Me.ToolTip1.SetToolTip(Me.btnLoad, "Load or Save a code list file")
+        Me.ToolTip1.SetToolTip(Me.btnLoad, "Load Codes")
         Me.btnLoad.UseVisualStyleBackColor = True
+        '
+        'btnSave
+        '
+        Me.btnSave.Enabled = False
+        Me.btnSave.Image = CType(resources.GetObject("btnSave.Image"), System.Drawing.Image)
+        Me.btnSave.Location = New System.Drawing.Point(249, 7)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(37, 26)
+        Me.btnSave.TabIndex = 22
+        Me.ToolTip1.SetToolTip(Me.btnSave, "Save Codes")
+        Me.btnSave.UseVisualStyleBackColor = True
+        '
+        'chkAskStartOver
+        '
+        Me.chkAskStartOver.AutoSize = True
+        Me.chkAskStartOver.Checked = Global.SSKeypadBruteforcer.My.MySettings.Default.askstartover
+        Me.chkAskStartOver.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkAskStartOver.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.SSKeypadBruteforcer.My.MySettings.Default, "askstartover", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.chkAskStartOver.Location = New System.Drawing.Point(9, 35)
+        Me.chkAskStartOver.Name = "chkAskStartOver"
+        Me.chkAskStartOver.Size = New System.Drawing.Size(110, 17)
+        Me.chkAskStartOver.TabIndex = 18
+        Me.chkAskStartOver.Text = "Ask to Start Over"
+        Me.ToolTip1.SetToolTip(Me.chkAskStartOver, "Whether to display a prompt asking to Start Over or not. Check by default.")
+        Me.chkAskStartOver.UseVisualStyleBackColor = True
+        '
+        'txtInterval
+        '
+        Me.txtInterval.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtInterval.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.SSKeypadBruteforcer.My.MySettings.Default, "interval", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.txtInterval.Location = New System.Drawing.Point(79, 13)
+        Me.txtInterval.Name = "txtInterval"
+        Me.txtInterval.Size = New System.Drawing.Size(44, 21)
+        Me.txtInterval.TabIndex = 2
+        Me.txtInterval.Text = Global.SSKeypadBruteforcer.My.MySettings.Default.interval
+        Me.txtInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.ToolTip1.SetToolTip(Me.txtInterval, "Interval in miliseconds to generate and send a new code." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Insert a bigger value i" & _
+                "f you have a slow computer/low fps.")
+        '
+        'btnRestart
+        '
+        Me.btnRestart.BackColor = System.Drawing.SystemColors.Control
+        Me.btnRestart.Enabled = False
+        Me.btnRestart.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnRestart.Image = CType(resources.GetObject("btnRestart.Image"), System.Drawing.Image)
+        Me.btnRestart.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnRestart.Location = New System.Drawing.Point(142, 500)
+        Me.btnRestart.Name = "btnRestart"
+        Me.btnRestart.Size = New System.Drawing.Size(90, 30)
+        Me.btnRestart.TabIndex = 19
+        Me.btnRestart.Text = "Restart"
+        Me.btnRestart.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnRestart.UseVisualStyleBackColor = False
         '
         'Label2
         '
         Me.Label2.AutoSize = True
         Me.Label2.Location = New System.Drawing.Point(9, 97)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(67, 13)
+        Me.Label2.Size = New System.Drawing.Size(52, 13)
         Me.Label2.TabIndex = 14
-        Me.Label2.Text = "Codes Tried:"
+        Me.Label2.Text = "Code list:"
         '
         'Label4
         '
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(96, 97)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(84, 13)
+        Me.Label4.Size = New System.Drawing.Size(83, 13)
         Me.Label4.TabIndex = 15
         Me.Label4.Text = "Debug Window:"
         '
-        'chkReverseScan
+        'chkReverseBruteforce
         '
-        Me.chkReverseScan.AutoSize = True
-        Me.chkReverseScan.Enabled = False
-        Me.chkReverseScan.Location = New System.Drawing.Point(185, 35)
-        Me.chkReverseScan.Name = "chkReverseScan"
-        Me.chkReverseScan.Size = New System.Drawing.Size(94, 17)
-        Me.chkReverseScan.TabIndex = 17
-        Me.chkReverseScan.Text = "Reverse Scan"
-        Me.chkReverseScan.UseVisualStyleBackColor = True
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.Controls.Add(Me.chkDebugActive)
-        Me.GroupBox1.Controls.Add(Me.chkDebugSound)
-        Me.GroupBox1.Location = New System.Drawing.Point(99, 497)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(131, 37)
-        Me.GroupBox1.TabIndex = 18
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Debug:"
-        '
-        'chkDebugActive
-        '
-        Me.chkDebugActive.AutoSize = True
-        Me.chkDebugActive.Location = New System.Drawing.Point(6, 14)
-        Me.chkDebugActive.Name = "chkDebugActive"
-        Me.chkDebugActive.Size = New System.Drawing.Size(56, 17)
-        Me.chkDebugActive.TabIndex = 7
-        Me.chkDebugActive.Text = "Active"
-        Me.chkDebugActive.UseVisualStyleBackColor = True
-        '
-        'btnSave
-        '
-        Me.btnSave.Enabled = False
-        Me.btnSave.Location = New System.Drawing.Point(278, 4)
-        Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(45, 23)
-        Me.btnSave.TabIndex = 22
-        Me.btnSave.Text = "Save"
-        Me.btnSave.UseVisualStyleBackColor = True
+        Me.chkReverseBruteforce.AutoSize = True
+        Me.chkReverseBruteforce.Enabled = False
+        Me.chkReverseBruteforce.Location = New System.Drawing.Point(165, 32)
+        Me.chkReverseBruteforce.Name = "chkReverseBruteforce"
+        Me.chkReverseBruteforce.Size = New System.Drawing.Size(131, 17)
+        Me.chkReverseBruteforce.TabIndex = 17
+        Me.chkReverseBruteforce.Text = "Bruteforce in Reverse"
+        Me.chkReverseBruteforce.UseVisualStyleBackColor = True
         '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(9, 9)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(99, 13)
+        Me.Label3.Size = New System.Drawing.Size(55, 13)
         Me.Label3.TabIndex = 20
-        Me.Label3.Text = "Code List Filename:"
+        Me.Label3.Text = "Code List:"
         '
         'txtCodeList
         '
         Me.txtCodeList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCodeList.Location = New System.Drawing.Point(114, 7)
+        Me.txtCodeList.Location = New System.Drawing.Point(64, 9)
         Me.txtCodeList.Name = "txtCodeList"
-        Me.txtCodeList.Size = New System.Drawing.Size(112, 20)
+        Me.txtCodeList.Size = New System.Drawing.Size(142, 21)
         Me.txtCodeList.TabIndex = 19
         '
         'GroupBox2
         '
-        Me.GroupBox2.Controls.Add(Me.chkScanWithUsedCodes)
-        Me.GroupBox2.Controls.Add(Me.chkReverseScan)
+        Me.GroupBox2.Controls.Add(Me.chkAskStartOver)
+        Me.GroupBox2.Controls.Add(Me.chkBruteforceWithUsedCodes)
+        Me.GroupBox2.Controls.Add(Me.chkReverseBruteforce)
         Me.GroupBox2.Controls.Add(Me.Label1)
         Me.GroupBox2.Controls.Add(Me.txtInterval)
         Me.GroupBox2.Location = New System.Drawing.Point(9, 33)
@@ -239,48 +245,88 @@ Partial Class frmMain
         Me.GroupBox2.Size = New System.Drawing.Size(314, 55)
         Me.GroupBox2.TabIndex = 23
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Scan Options:"
+        Me.GroupBox2.Text = "Bruteforce Options:"
         '
         'lblTime
         '
         Me.lblTime.AutoSize = True
-        Me.lblTime.Location = New System.Drawing.Point(9, 517)
+        Me.lblTime.Location = New System.Drawing.Point(276, 97)
         Me.lblTime.Name = "lblTime"
-        Me.lblTime.Size = New System.Drawing.Size(30, 13)
+        Me.lblTime.Size = New System.Drawing.Size(29, 13)
         Me.lblTime.TabIndex = 24
         Me.lblTime.Text = "Time"
         '
         'tmrDelayTimer
         '
-        Me.tmrDelayTimer.Enabled = True
         Me.tmrDelayTimer.Interval = 1
+        '
+        'lblPage
+        '
+        Me.lblPage.AutoSize = True
+        Me.lblPage.Location = New System.Drawing.Point(9, 514)
+        Me.lblPage.Name = "lblPage"
+        Me.lblPage.Size = New System.Drawing.Size(44, 13)
+        Me.lblPage.TabIndex = 25
+        Me.lblPage.Text = "Page: 1"
+        '
+        'btnConfig
+        '
+        Me.btnConfig.Image = CType(resources.GetObject("btnConfig.Image"), System.Drawing.Image)
+        Me.btnConfig.Location = New System.Drawing.Point(286, 7)
+        Me.btnConfig.Name = "btnConfig"
+        Me.btnConfig.Size = New System.Drawing.Size(37, 26)
+        Me.btnConfig.TabIndex = 20
+        Me.btnConfig.UseVisualStyleBackColor = True
+        '
+        'btnUp
+        '
+        Me.btnUp.Enabled = False
+        Me.btnUp.Image = CType(resources.GetObject("btnUp.Image"), System.Drawing.Image)
+        Me.btnUp.Location = New System.Drawing.Point(94, 500)
+        Me.btnUp.Name = "btnUp"
+        Me.btnUp.Size = New System.Drawing.Size(24, 30)
+        Me.btnUp.TabIndex = 26
+        Me.btnUp.UseVisualStyleBackColor = True
+        '
+        'btnDown
+        '
+        Me.btnDown.Enabled = False
+        Me.btnDown.Image = CType(resources.GetObject("btnDown.Image"), System.Drawing.Image)
+        Me.btnDown.Location = New System.Drawing.Point(117, 500)
+        Me.btnDown.Name = "btnDown"
+        Me.btnDown.Size = New System.Drawing.Size(24, 30)
+        Me.btnDown.TabIndex = 27
+        Me.btnDown.UseVisualStyleBackColor = True
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(332, 539)
+        Me.ClientSize = New System.Drawing.Size(332, 536)
+        Me.Controls.Add(Me.btnDown)
+        Me.Controls.Add(Me.btnUp)
+        Me.Controls.Add(Me.btnRestart)
+        Me.Controls.Add(Me.btnConfig)
+        Me.Controls.Add(Me.lblPage)
         Me.Controls.Add(Me.lblTime)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.btnLoad)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtCodeList)
-        Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.btnClearLog)
         Me.Controls.Add(Me.lstDebug)
         Me.Controls.Add(Me.lblCodeCount)
         Me.Controls.Add(Me.lstCodes)
+        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.Name = "frmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "SS Keypad Cracker"
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
+        Me.Text = "SS Keypad Bruteforcer"
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
         Me.ResumeLayout(False)
@@ -289,21 +335,18 @@ Partial Class frmMain
     End Sub
     Friend WithEvents lstCodes As System.Windows.Forms.ListBox
     Friend WithEvents txtInterval As System.Windows.Forms.TextBox
-    Public WithEvents tmrScanner As System.Windows.Forms.Timer
+    Public WithEvents tmrBruteforce As System.Windows.Forms.Timer
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents lblCodeCount As System.Windows.Forms.Label
     Friend WithEvents lstDebug As System.Windows.Forms.ListBox
-    Friend WithEvents chkDebugSound As System.Windows.Forms.CheckBox
-    Friend WithEvents chkScanWithUsedCodes As System.Windows.Forms.CheckBox
+    Friend WithEvents chkBruteforceWithUsedCodes As System.Windows.Forms.CheckBox
     Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
     Friend WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
     Friend WithEvents btnClearLog As System.Windows.Forms.Button
     Friend WithEvents ToolTip1 As System.Windows.Forms.ToolTip
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Label4 As System.Windows.Forms.Label
-    Friend WithEvents chkReverseScan As System.Windows.Forms.CheckBox
-    Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-    Friend WithEvents chkDebugActive As System.Windows.Forms.CheckBox
+    Friend WithEvents chkReverseBruteforce As System.Windows.Forms.CheckBox
     Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents btnLoad As System.Windows.Forms.Button
     Friend WithEvents Label3 As System.Windows.Forms.Label
@@ -311,5 +354,11 @@ Partial Class frmMain
     Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
     Friend WithEvents lblTime As System.Windows.Forms.Label
     Friend WithEvents tmrDelayTimer As System.Windows.Forms.Timer
+    Friend WithEvents chkAskStartOver As System.Windows.Forms.CheckBox
+    Friend WithEvents btnRestart As System.Windows.Forms.Button
+    Friend WithEvents lblPage As System.Windows.Forms.Label
+    Friend WithEvents btnConfig As System.Windows.Forms.Button
+    Friend WithEvents btnUp As System.Windows.Forms.Button
+    Friend WithEvents btnDown As System.Windows.Forms.Button
 
 End Class
