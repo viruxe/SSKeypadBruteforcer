@@ -12,13 +12,13 @@ Public Class frmMain
     Declare Function RegisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Integer
     Declare Function UnregisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer) As Integer
 
-    Const gCurVersion As String = "1.0-beta"
-    Const gCheckForUpdates As Boolean = False
+    Const gCurVersion As String = "1.1-alpha"
+    Const gCheckForUpdates As Boolean = True
     Const gCheckDelayAmount As Integer = 2000
     Const gCodeListLimit As Integer = 29
 
     Private gCurCodeListPath As String 'Store the file path
-    Private gDoKeystrokes As Boolean = False 'Send keys or not (debug purposes)
+    Private gDoKeystrokes As Boolean = True 'Send keys or not (debug purposes)
     Private gBruteforceStart As Date
     Private gCodeList As New CodeList
     Private gCurCodePage As Integer = 1
@@ -131,6 +131,7 @@ Public Class frmMain
     End Sub
 
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Log("> Version: " & gCurVersion)
         Call RegisterHotKey(Me.Handle, 9, MOD_ALT, Keys.PrintScreen)
 
         If gCheckForUpdates Then tmrDelayTimer.Start()
