@@ -108,7 +108,7 @@ Public Class frmMain
         Dim version As String = String.Empty
 
         Try
-            Dim fileRequest As HttpWebRequest = HttpWebRequest.Create("https://raw.github.com/viruxe/SSKeypadCracker/master/version.check")
+            Dim fileRequest As HttpWebRequest = HttpWebRequest.Create("https://raw.github.com/viruxe/SSKeypadBruteforcer/master/version.check")
             Dim fileResponse As HttpWebResponse = fileRequest.GetResponse()
             Using sr As StreamReader = New StreamReader(fileResponse.GetResponseStream())
                 version = sr.ReadToEnd
@@ -315,13 +315,13 @@ Public Class frmMain
     ''' </summary>
     Private Sub tmrDelayTimer_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrDelayTimer.Tick
         tmrDelayTimer.Stop()
-        'Check for a new version of the program trough GitHub
+        'Check for a new version of the program through GitHub
         Log("> Checking for updates...")
         Dim newVersion As String = GetVersionStringFromWeb()
         If Not newVersion = String.Empty Then 'Only do something if newVersion is not empty
             If newVersion <> gCurVersion Then
                 If MessageBox.Show("There is a new version! Would you like to download it?" & vbNewLine & "Version: " & newVersion, "New version", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = Windows.Forms.DialogResult.Yes Then
-                    Process.Start("https://github.com/viruxe/SSKeypadCracker/")
+                    Process.Start("https://github.com/viruxe/SSKeypadBruteforcer/releases/")
                 End If
             Else : Log("> Program is up to date. Brute at will.")
             End If
