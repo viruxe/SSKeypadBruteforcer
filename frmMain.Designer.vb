@@ -35,6 +35,7 @@ Partial Class frmMain
         Me.btnClearLog = New System.Windows.Forms.Button()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btnLoad = New System.Windows.Forms.Button()
+        Me.ContextMenuStripLoad = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.btnSave = New System.Windows.Forms.Button()
         Me.chkAskStartOver = New System.Windows.Forms.CheckBox()
         Me.txtInterval = New System.Windows.Forms.TextBox()
@@ -43,7 +44,7 @@ Partial Class frmMain
         Me.Label4 = New System.Windows.Forms.Label()
         Me.chkReverseBruteforce = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.txtCodeList = New System.Windows.Forms.TextBox()
+        Me.txtCodeListFile = New System.Windows.Forms.TextBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.lblTime = New System.Windows.Forms.Label()
         Me.tmrDelayTimer = New System.Windows.Forms.Timer(Me.components)
@@ -79,9 +80,9 @@ Partial Class frmMain
         Me.lblCodeCount.AutoSize = True
         Me.lblCodeCount.Location = New System.Drawing.Point(9, 497)
         Me.lblCodeCount.Name = "lblCodeCount"
-        Me.lblCodeCount.Size = New System.Drawing.Size(46, 13)
+        Me.lblCodeCount.Size = New System.Drawing.Size(13, 13)
         Me.lblCodeCount.TabIndex = 4
-        Me.lblCodeCount.Text = "0 Codes"
+        Me.lblCodeCount.Text = "0"
         '
         'lstDebug
         '
@@ -96,7 +97,7 @@ Partial Class frmMain
         Me.chkBruteforceWithUsedCodes.AutoSize = True
         Me.chkBruteforceWithUsedCodes.Location = New System.Drawing.Point(165, 12)
         Me.chkBruteforceWithUsedCodes.Name = "chkBruteforceWithUsedCodes"
-        Me.chkBruteforceWithUsedCodes.Size = New System.Drawing.Size(147, 17)
+        Me.chkBruteforceWithUsedCodes.Size = New System.Drawing.Size(144, 17)
         Me.chkBruteforceWithUsedCodes.TabIndex = 7
         Me.chkBruteforceWithUsedCodes.Text = "Bruteforce with Code List"
         Me.ToolTip1.SetToolTip(Me.chkBruteforceWithUsedCodes, "Start bruteforcing with the already used codes list in backwards.")
@@ -126,6 +127,7 @@ Partial Class frmMain
         '
         'btnLoad
         '
+        Me.btnLoad.ContextMenuStrip = Me.ContextMenuStripLoad
         Me.btnLoad.Image = CType(resources.GetObject("btnLoad.Image"), System.Drawing.Image)
         Me.btnLoad.Location = New System.Drawing.Point(212, 7)
         Me.btnLoad.Name = "btnLoad"
@@ -133,6 +135,11 @@ Partial Class frmMain
         Me.btnLoad.TabIndex = 21
         Me.ToolTip1.SetToolTip(Me.btnLoad, "Load Codes")
         Me.btnLoad.UseVisualStyleBackColor = True
+        '
+        'ContextMenuStripLoad
+        '
+        Me.ContextMenuStripLoad.Name = "ContextMenuStripLoad"
+        Me.ContextMenuStripLoad.Size = New System.Drawing.Size(153, 26)
         '
         'btnSave
         '
@@ -149,11 +156,10 @@ Partial Class frmMain
         '
         Me.chkAskStartOver.AutoSize = True
         Me.chkAskStartOver.Checked = Global.SSKeypadBruteforcer.My.MySettings.Default.askstartover
-        Me.chkAskStartOver.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkAskStartOver.DataBindings.Add(New System.Windows.Forms.Binding("Checked", Global.SSKeypadBruteforcer.My.MySettings.Default, "askstartover", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.chkAskStartOver.Location = New System.Drawing.Point(9, 35)
         Me.chkAskStartOver.Name = "chkAskStartOver"
-        Me.chkAskStartOver.Size = New System.Drawing.Size(110, 17)
+        Me.chkAskStartOver.Size = New System.Drawing.Size(107, 17)
         Me.chkAskStartOver.TabIndex = 18
         Me.chkAskStartOver.Text = "Ask to Start Over"
         Me.ToolTip1.SetToolTip(Me.chkAskStartOver, "Whether to display a prompt asking to Start Over or not. Check by default.")
@@ -176,7 +182,7 @@ Partial Class frmMain
         '
         Me.btnRestart.BackColor = System.Drawing.SystemColors.Control
         Me.btnRestart.Enabled = False
-        Me.btnRestart.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnRestart.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnRestart.Image = CType(resources.GetObject("btnRestart.Image"), System.Drawing.Image)
         Me.btnRestart.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnRestart.Location = New System.Drawing.Point(142, 500)
@@ -211,7 +217,7 @@ Partial Class frmMain
         Me.chkReverseBruteforce.Enabled = False
         Me.chkReverseBruteforce.Location = New System.Drawing.Point(165, 32)
         Me.chkReverseBruteforce.Name = "chkReverseBruteforce"
-        Me.chkReverseBruteforce.Size = New System.Drawing.Size(131, 17)
+        Me.chkReverseBruteforce.Size = New System.Drawing.Size(129, 17)
         Me.chkReverseBruteforce.TabIndex = 17
         Me.chkReverseBruteforce.Text = "Bruteforce in Reverse"
         Me.chkReverseBruteforce.UseVisualStyleBackColor = True
@@ -225,13 +231,13 @@ Partial Class frmMain
         Me.Label3.TabIndex = 20
         Me.Label3.Text = "Code List:"
         '
-        'txtCodeList
+        'txtCodeListFile
         '
-        Me.txtCodeList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCodeList.Location = New System.Drawing.Point(64, 9)
-        Me.txtCodeList.Name = "txtCodeList"
-        Me.txtCodeList.Size = New System.Drawing.Size(142, 21)
-        Me.txtCodeList.TabIndex = 19
+        Me.txtCodeListFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtCodeListFile.Location = New System.Drawing.Point(64, 9)
+        Me.txtCodeListFile.Name = "txtCodeListFile"
+        Me.txtCodeListFile.Size = New System.Drawing.Size(142, 21)
+        Me.txtCodeListFile.TabIndex = 19
         '
         'GroupBox2
         '
@@ -313,7 +319,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.btnLoad)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.txtCodeList)
+        Me.Controls.Add(Me.txtCodeListFile)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.btnClearLog)
@@ -350,7 +356,7 @@ Partial Class frmMain
     Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents btnLoad As System.Windows.Forms.Button
     Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents txtCodeList As System.Windows.Forms.TextBox
+    Friend WithEvents txtCodeListFile As System.Windows.Forms.TextBox
     Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
     Friend WithEvents lblTime As System.Windows.Forms.Label
     Friend WithEvents tmrDelayTimer As System.Windows.Forms.Timer
@@ -360,5 +366,6 @@ Partial Class frmMain
     Friend WithEvents btnConfig As System.Windows.Forms.Button
     Friend WithEvents btnUp As System.Windows.Forms.Button
     Friend WithEvents btnDown As System.Windows.Forms.Button
+    Friend WithEvents ContextMenuStripLoad As System.Windows.Forms.ContextMenuStrip
 
 End Class

@@ -34,8 +34,14 @@
     End Class
 
     Public Class CodeList
-        Private Codes As List(Of String)
+        Private cCodes As List(Of String)
         Private cDuplicates As Integer
+
+        Public ReadOnly Property Codes() As List(Of String)
+            Get
+                Return cCodes
+            End Get
+        End Property
 
         ''' <summary>
         ''' Gets the amount of duplicates found in the current CodeList while trying to populate it
@@ -50,7 +56,7 @@
         End Property
 
         Sub New()
-            Codes = New List(Of String)
+            cCodes = New List(Of String)
         End Sub
 
         Public Sub Clear()

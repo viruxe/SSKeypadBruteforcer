@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("SSKeypadCracker")> 
+<Assembly: AssemblyTitle("SSKeypadBruteforcer")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("SSKeypadCracker")> 
+<Assembly: AssemblyProduct("SSKeypadBruteforcer")> 
 <Assembly: AssemblyCopyright("VIRUXE")> 
 <Assembly: AssemblyTrademark("")> 
 

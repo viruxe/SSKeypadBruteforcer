@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="interval" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="askstartover" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="reminder" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
