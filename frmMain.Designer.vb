@@ -52,6 +52,7 @@ Partial Class frmMain
         Me.btnConfig = New System.Windows.Forms.Button()
         Me.btnUp = New System.Windows.Forms.Button()
         Me.btnDown = New System.Windows.Forms.Button()
+        Me.tmrDurationUpdater = New System.Windows.Forms.Timer(Me.components)
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -139,7 +140,7 @@ Partial Class frmMain
         'ContextMenuStripLoad
         '
         Me.ContextMenuStripLoad.Name = "ContextMenuStripLoad"
-        Me.ContextMenuStripLoad.Size = New System.Drawing.Size(153, 26)
+        Me.ContextMenuStripLoad.Size = New System.Drawing.Size(61, 4)
         '
         'btnSave
         '
@@ -304,6 +305,10 @@ Partial Class frmMain
         Me.btnDown.TabIndex = 27
         Me.btnDown.UseVisualStyleBackColor = True
         '
+        'tmrDurationUpdater
+        '
+        Me.tmrDurationUpdater.Interval = 1000
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -367,5 +372,6 @@ Partial Class frmMain
     Friend WithEvents btnUp As System.Windows.Forms.Button
     Friend WithEvents btnDown As System.Windows.Forms.Button
     Friend WithEvents ContextMenuStripLoad As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents tmrDurationUpdater As System.Windows.Forms.Timer
 
 End Class

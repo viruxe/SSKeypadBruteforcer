@@ -12,7 +12,7 @@ Public Class frmMain
     Declare Function RegisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Integer
     Declare Function UnregisterHotKey Lib "user32" (ByVal hwnd As IntPtr, ByVal id As Integer) As Integer
 
-    Const gCurVersion As String = "1.1.1-alpha"
+    Const gCurVersion As String = "1.2.0-alpha"
     Const gCheckForUpdates As Boolean = True
     Const gCheckDelayAmount As Integer = 2000
     Const gCodeListLimit As Integer = 29
@@ -48,6 +48,8 @@ Public Class frmMain
                 tmrBruteforce.Interval = Val(txtInterval.Text)
                 tmrBruteforce.Start()
 
+                tmrDurationUpdater.Start()
+
                 'Update duration label
                 gBruteforceStartDate = DateTime.Now
                 lblTime.Text = GetBruteDuration()
@@ -75,6 +77,7 @@ Public Class frmMain
     Private Sub StopBruteforce()
         My.Computer.Audio.Play("c:\Windows\Media\Speech Off.wav")
         tmrBruteforce.Stop()
+        tmrDurationUpdater.Stop()
 
         'Re-enable controls
         txtInterval.Enabled = True
@@ -93,7 +96,17 @@ Public Class frmMain
         If Not chkBruteforceWithUsedCodes.Checked And gCodeList.Count > 0 And gCodeList.DuplicatesCount > 0 Then Log("> With " & gCodeList.DuplicatesCount & " Duplicates found.")
     End Sub
 
-    Private Sub SwitchPage()
+    Enum PageSwitch
+        PAGE_DOWN
+        PAGE_UP
+    End Enum
+
+    ''' <summary>
+    ''' Switch between code pages in lstCodes
+    ''' </summary>
+    ''' <param name="action"></param>
+    ''' <remarks></remarks>
+    Private Sub SwitchPage(ByVal action As PageSwitch)
         lstCodes.Items.Clear()
 
         For index = gCurCodePage * gCodeListLimit To (gCurCodePage * gCodeListLimit) + gCodeListLimit
@@ -102,6 +115,11 @@ Public Class frmMain
         Next
     End Sub
 
+    ''' <summary>
+    ''' Get the duration of the current bruteforce process
+    ''' </summary>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Private Function GetBruteDuration() As String
         Dim duration As TimeSpan = Date.Now - gBruteforceStartDate
 
@@ -111,6 +129,11 @@ Public Class frmMain
         CInt(duration.TotalSeconds) Mod 60)
     End Function
 
+    ''' <summary>
+    ''' Gets the version value from version.check on github for the Update Checker
+    ''' </summary>
+    ''' <returns>String</returns>
+    ''' <remarks></remarks>
     Private Function GetVersionStringFromWeb() As String
         Dim version As String = String.Empty
 
@@ -138,6 +161,11 @@ Public Class frmMain
     End Sub
 
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If My.Settings.formlocation.IsEmpty Then
+            Me.StartPosition = FormStartPosition.CenterScreen
+        Else
+            Me.Location = My.Settings.formlocation
+        End If
         Log(APP_VERSION_TEXT)
 
         Call RegisterHotKey(Me.Handle, 9, MOD_ALT, Keys.PrintScreen)
@@ -155,22 +183,12 @@ Public Class frmMain
     Private Sub frmMain_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
         Call UnregisterHotKey(Me.Handle, 9)
         If chkBruteforceWithUsedCodes.Checked Then chkBruteforceWithUsedCodes.Checked = False
+
+        My.Settings.formlocation = Me.Location
         My.Settings.Save()
     End Sub
 
     Private Sub BRUTE_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrBruteforce.Tick
-        Static tickCount As Integer 'Count 1 second
-
-        'Update brute duration label after 1 second has passed
-        If tickCount < 10 Then
-            If chkBruteforceWithUsedCodes.Checked Then
-                lblTime.Text = GetBruteDuration()
-            Else : tickCount += 1
-            End If
-        Else
-            tickCount = 1
-        End If
-
         'Brute process handling
         If chkBruteforceWithUsedCodes.Checked Then
             'Loop through listbox
@@ -202,23 +220,35 @@ Public Class frmMain
                 Dim newCode As New Code(gCodeList)
 
                 If newCode.Value <> String.Empty Then 'Insurance
-                    gCodeList.Add(newCode.Value)
+                    If newCode.Value <> -1 Then
+                        gCodeList.Add(newCode.Value)
 
-                    lblCodeCount.Text = gCodeList.Count & " (" & gCodeList.DuplicatesCount & ")" 'Update code count
+                        lblCodeCount.Text = gCodeList.Count & " (" & gCodeList.DuplicatesCount & ")" 'Update code count
 
-                    'Update listbox
-                    If lstCodes.Items.Count = gCodeListLimit Then lstCodes.Items.RemoveAt(0)
-                    lstCodes.Items.Add(newCode.Value)
-                    lstCodes.SelectedIndex = lstCodes.Items.Count - 1
+                        'Update listbox
+                        If lstCodes.Items.Count = gCodeListLimit Then lstCodes.Items.RemoveAt(0)
+                        lstCodes.Items.Add(newCode.Value)
+                        lstCodes.SelectedIndex = lstCodes.Items.Count - 1
 
-                    'Update page label
-                    UpdatePageLabel()
+                        'Update page label
+                        UpdatePageLabel()
 
-                    'Send keys
-                    If gDoKeystrokes Then
-                        SendKeys.Send(newCode.Value & "~")
+                        'Send keys
+                        If gDoKeystrokes Then
+                            SendKeys.Send(newCode.Value & "~")
+                        Else
+                            'Log(newCode.Value, debugLog:=True)
+                        End If
                     Else
-                        'Log(newCode.Value, debugLog:=True)
+                        StopBruteforce()
+                        MessageBox.Show( _
+                            "No moar codes for you buddy!" & vbNewLine & vbNewLine & _
+                            "With 4 digit pincodes we can only have 10000 combinations and you've just reached your 10000th code!" & vbNewLine & _
+                            "This unfortunately means something went wrong with this bruteforcing process. Have some possible reasons:" & vbNewLine & _
+                            "- You have a slow computer and as a consequence some codes might not have been tried." & vbNewLine & _
+                            "- The gamemode might have been patched in some sort of way that makes this program just go on with the process without knowing anything." & vbNewLine & _
+                            "- Or I just messed up somewhere in the code. :D" & vbNewLine & vbNewLine & _
+                            "Just try again and hope for the best.", "WHOA!?!?!?!?", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     End If
                 Else
                     Log("> Couldn't generate a code! WTF!")
@@ -407,7 +437,7 @@ Public Class frmMain
                 lblPage.Text = "Page: " & gCurCodePage
                 If gCurCodePage > 1 Then btnDown.Enabled = True
                 If gCurCodePage = gTotalCodePages + 1 Then btnUp.Enabled = False
-                SwitchPage()
+                SwitchPage(PageSwitch.PAGE_UP)
             End If
         Catch ex As Exception
             ShowError(ex.Message)
@@ -421,14 +451,14 @@ Public Class frmMain
                 lblPage.Text = "Page: " & gCurCodePage
                 If btnUp.Enabled = False Then btnUp.Enabled = True
                 If gCurCodePage = 1 Then btnDown.Enabled = False
-                SwitchPage()
+                SwitchPage(PageSwitch.PAGE_DOWN)
             End If
         Catch ex As Exception
             ShowError(ex.Message)
         End Try
     End Sub
 
-    Private Sub ContextMenuStripLoad_ItemClicked(ByVal sender As Object, ByVal e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles ContextMenuStripLoad.ItemClicked
-
+    Private Sub tmrUpdateDuration_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrDurationUpdater.Tick
+        lblTime.Text = GetBruteDuration()
     End Sub
 End Class
